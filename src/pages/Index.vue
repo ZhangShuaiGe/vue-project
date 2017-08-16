@@ -3,7 +3,7 @@
         <div>
           <el-row type="flex">
             <el-col :span="6"> </el-col>
-            <el-col :span="12">
+            <el-col class="list_box" :span="12">
               <div class="nav">
                 <a :class="{'active' : active === 1}" href="javascript:;" @click="add('',1)">全部</a>
                 <a :class="{'active' : active === 2}" href="javascript:;" @click="add('good',2)">精华</a>
@@ -28,10 +28,6 @@
             </el-col>
             <el-col :span="6"> </el-col>
           </el-row>
-          <template>
-            <el-table v-loading="loading2" element-loading-text="拼命加载中" style="width: 100%;height: 300px">
-            </el-table>
-          </template>
         </div>
     </div>
 </template>
@@ -44,26 +40,26 @@
         return {
           json: '',
           tab: '',
-          page: '',
+          page: 1,
           active: 1,
-          loading2: true
+          scroll: ''
         }
       },
-      mounted: function () {
+      created: function () {
         this.add("",1);
       },
-      beforeUpdate: function () {
-        this.loading2 = true;
-      },
-      update: function () {
-        this.loading2 = true;
+      mounted() {
+        var _this = this;
+        window.addEventListener('scroll',function () {
+          _this.scrollTop();
+        });
       },
       methods: {
         add: function (val,num) {
           this.active = num;
           axios.get("https://www.vue-js.com/api/v1/topics",{
               params: {
-                  tab: val
+                tab: val,
               }
           })
           .then((result) => {
@@ -72,12 +68,48 @@
           .catch( (err)=> {
             alert(err)
           })
+        },
+        scrollTop: function () {
+//          卷上去的高度+可视区的宽度 = body的总宽度
+          this.scroll = document.body.scrollTop;
+//          body 总高度
+          var bodyHeight = document.body.clientHeight;
+          console.log(this.scroll);
+//          可视区的高度
+          var offsetHeight = document.documentElement.clientHeight;
+          console.log("卷上去",this.scroll);
+          console.log("可视区",offsetHeight);
+          console.log('总高度+',this.scroll + offsetHeight)
+          if(this.scroll + offsetHeight >= bodyHeight){
+            alert(1)
+            axios.get("https://www.vue-js.com/api/v1/topics",{
+              params: {
+                page: ++this.page
+              }
+            })
+              .then((result) => {
+                this.json.push(result.data.data)
+              })
+              .catch( (err)=> {
+                alert(err)
+              })
+          }
         }
       }
     }
 </script>
 
 <style lang="less" scoped>
+  .list_box{
+    position: relative;
+    .shade{
+      position: absolute;
+      top:0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
   .time{
     float: right;
   }
@@ -95,7 +127,7 @@
     padding: 30px 0;
     a{
       margin-right: 10px;
-      padding: 2px 10px;
+      padding: 4px 10px;
       border-radius: 4px;
     }
     a.active{
