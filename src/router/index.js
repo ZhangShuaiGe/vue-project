@@ -1,20 +1,37 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Hello from '@/components/Hello'
-import Test from '@/components/Test'
+import Layout from '@/pages/layout'
+import Index from '@/pages/Index'
+import Error from '@/pages/Error'
+import PostDetail from "@/pages/postDetails"
+
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: Hello
+      name: 'Layout',
+      component: Layout,
+      children: [
+        {
+          path: '',
+          name: 'index',
+          component: Index
+        },
+        {
+          path: 'PostDetail',
+          name: 'PostDetail',
+          component: PostDetail
+        }
+      ]
     },
+    // 不需要公共头部和尾部的走下面路由
     {
-      path: "/../1",
-      name: "test",
-      component: Test
+      path: '*',
+      name: '404',
+      component: Error
     }
   ]
 })
