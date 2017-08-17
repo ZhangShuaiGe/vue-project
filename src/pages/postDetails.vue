@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Header></Header>
+      <pubheader></pubheader>
       <div class="details_box">
         <!--帖子详情页面-->
         <el-row type="flex">
@@ -45,19 +45,19 @@
           <el-col :span="5"></el-col>
         </el-row>
       </div>
-      <Footer></Footer>
+      <pubfooter></pubfooter>
     </div>
 </template>
 
 <script>
-    import Header from '../components/header.vue'
-    import Footer from '../components/footer.vue'
+    import pubheader from '../components/header.vue'
+    import pubfooter from '../components/footer.vue'
     import axios from "axios"
     export default {
       name: 'app',
       components: {
-        Header,
-        Footer
+        pubheader,
+        pubfooter
       },
       data () {
           return {

@@ -1,21 +1,21 @@
 <template>
     <div>
-      <Header></Header>
+      <pubheader></pubheader>
        <div class="text">
          404
        </div>
-      <Footer></Footer>
+      <pubfooter></pubfooter>
     </div>
 </template>
 
 <script>
-    import Header from '../components/header.vue'
-    import Footer from '../components/footer.vue'
+    import pubheader from '../components/header.vue'
+    import pubfooter from '../components/footer.vue'
     export default {
         name: 'app',
         components:{
-          Header,
-          Footer
+          pubheader,
+          pubfooter
         }
     }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <Header></Header>
+        <pubheader></pubheader>
         <div>
           <el-row type="flex">
             <el-col :span="6"> </el-col>
@@ -34,19 +34,24 @@
             <el-col :span="6"> </el-col>
           </el-row>
         </div>
-        <Footer></Footer>
+        <div class="loading" v-if="loding">
+          <i class="el-icon-loading"></i>
+          <span>玩命加载中...</span>
+        </div>
+        <div class="data_no" v-else>没有更多数据了...</div>
+        <pubfooter></pubfooter>
     </div>
 </template>
 
 <script>
-    import Header from '../components/header.vue'
-    import Footer from '../components/footer.vue'
+    import pubheader from '../components/header.vue'
+    import pubfooter from '../components/footer.vue'
     import axios from 'axios'
     export default {
       name: 'app',
       components: {
-        Footer,
-        Header
+        pubheader,
+        pubfooter
       },
       data(){
         return {
@@ -54,7 +59,8 @@
           tab: '',
           page: 1,
           active: 1,
-          scroll: ''
+          scroll: '',
+          loding: false,
         }
       },
       created: function () {
@@ -92,20 +98,29 @@
           var offsetHeight = document.documentElement.clientHeight;
 //          大于body的总高度
           if(this.scroll + offsetHeight >= bodyHeight){
+            var pages = this.page;
             axios.get("https://www.vue-js.com/api/v1/topics",{
-              params: {
-                tab: this.tab,
-                page: ++this.page
-              }
-            })
-              .then((result) => {
-                for(let i = 0 ; i<result.data.data.length; i++){
-                  this.json.push(result.data.data[i]);
+                params: {
+                  tab: this.tab,
+                  page: ++pages
                 }
-              })
-              .catch( (err)=> {
+            })
+            .then((result) => {
+                if(result.data.data.length == 0){
+                  this.loding = false;
+                  return ;
+                }
+                this.loding = true;
+                setTimeout( () => {
+                  for(let i = 0 ; i<result.data.data.length; i++){
+                    this.json.push(result.data.data[i]);
+                  }
+                  this.page++
+                },1000);
+            })
+            .catch( (err)=> {
                 alert(err)
-              })
+            })
           }
         }
       }
@@ -113,6 +128,19 @@
 </script>
 
 <style lang="less" scoped>
+  .loading{
+    height: 20px;
+    font-size: 18px;
+    text-align: center;
+    span{
+      margin-left: 10px;
+    }
+  }
+  .data_no{
+    display: block;
+    text-align: center;
+    font-size: 14px;
+  }
   .elite{
     background: #1D8CE0;
     color: #fff;

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@/pages/Index'
 import Error from '@/pages/Error'
 import PostDetail from "@/pages/postDetails"
+import Login from  "@/pages/login"
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: 'PostDetail',
       name: 'PostDetail',
       component: PostDetail
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     // 404
     {

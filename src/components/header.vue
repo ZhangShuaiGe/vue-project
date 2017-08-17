@@ -10,9 +10,11 @@
             </el-col>
             <el-col :span="12" class="nav">
               <router-link :to="'/'">首页</router-link>
-              <a href="http://doc.vue-js.com" target="_blank">vue2.0文档</a>
-              <router-link :to="'/message'">登录</router-link>
-              <router-link :to="'/message'">注册</router-link>
+              <!--<a href="http://doc.vue-js.com" target="_blank">vue2.0文档</a>-->
+              <router-link @login="logger" :to="'/login'">登录</router-link>
+              <router-link v-if="login" :to="'/'">欢迎：123</router-link>
+              <router-link v-if="login" :to="'/'">个人中心</router-link>
+              <a href="javascript:;" v-if="login" :to="'/'">退出</a>
             </el-col>
           </el-row>
         </div>
@@ -24,7 +26,17 @@
 
 <script>
     export default {
-        name: 'app'
+        name: 'app',
+        data () {
+          return {
+            login: false,
+          }
+        },
+        methods: {
+          logger: function (data) {
+            this.login = data;
+          }
+        }
     }
 </script>
 
