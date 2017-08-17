@@ -1,15 +1,16 @@
 <template>
     <div class="box">
+        <Header></Header>
         <div>
           <el-row type="flex">
             <el-col :span="6"> </el-col>
             <el-col class="list_box" :span="12">
               <div class="nav">
-                <a :class="{'active' : active === 1}" href="javascript:;" @click="add('',1)">全部</a>
-                <a :class="{'active' : active === 2}" href="javascript:;" @click="add('good',2)">精华</a>
-                <a :class="{'active' : active === 3}" href="javascript:;" @click="add('share',3)">分享</a>
-                <a :class="{'active' : active === 4}" href="javascript:;" @click="add('ask',4)">问答</a>
-                <a :class="{'active' : active === 5}" href="javascript:;" @click="add('job',5)">招聘</a>
+                <a :class="{'active' : active === 1}" href="javascript:;" @click="nav('',1)">全部</a>
+                <a :class="{'active' : active === 2}" href="javascript:;" @click="nav('good',2)">精华</a>
+                <a :class="{'active' : active === 3}" href="javascript:;" @click="nav('share',3)">分享</a>
+                <a :class="{'active' : active === 4}" href="javascript:;" @click="nav('ask',4)">问答</a>
+                <a :class="{'active' : active === 5}" href="javascript:;" @click="nav('job',5)">招聘</a>
               </div>
               <ul class="list">
                 <li v-for="list in json">
@@ -21,6 +22,10 @@
                   <span>/</span>
                   <span title="浏览">{{list.visit_count}}</span>
                   <span class="top" v-if="list.top">置顶</span>
+                  <span class="elite" v-else-if="list.good">精华</span>
+                  <span v-else-if="list.tab === 'share'" class="share">分享</span>
+                  <span v-else-if="list.tab === 'ask'" class="query">问答</span>
+                  <span v-else-if="list.tab === 'job'" class="zhaopin">招聘</span>
                   <router-link :to="{name:'PostDetail',params:{'id':list.id}}">{{list.title}}</router-link>
                   <span class="time">{{list.last_reply_at}}</span>
                 </li>
@@ -29,13 +34,20 @@
             <el-col :span="6"> </el-col>
           </el-row>
         </div>
+        <Footer></Footer>
     </div>
 </template>
 
 <script>
+    import Header from '../components/header.vue'
+    import Footer from '../components/footer.vue'
     import axios from 'axios'
     export default {
       name: 'app',
+      components: {
+        Footer,
+        Header
+      },
       data(){
         return {
           json: '',
@@ -46,7 +58,7 @@
         }
       },
       created: function () {
-        this.add("",1);
+        this.nav("",1);
       },
       mounted() {
         var _this = this;
@@ -55,7 +67,7 @@
         });
       },
       methods: {
-        add: function (val,num) {
+        nav: function (val,num) {
           this.active = num;
           axios.get("https://www.vue-js.com/api/v1/topics",{
               params: {
@@ -63,32 +75,33 @@
               }
           })
           .then((result) => {
-            this.json = result.data.data
+            this.json = result.data.data;
+            this.tab = val;
+            this.page = 1;
           })
           .catch( (err)=> {
             alert(err)
           })
         },
         scrollTop: function () {
-//          卷上去的高度+可视区的宽度 = body的总宽度
+//          卷上去的高度+可视区的高度 = body的总高度
           this.scroll = document.body.scrollTop;
 //          body 总高度
           var bodyHeight = document.body.clientHeight;
-          console.log(this.scroll);
 //          可视区的高度
           var offsetHeight = document.documentElement.clientHeight;
-          console.log("卷上去",this.scroll);
-          console.log("可视区",offsetHeight);
-          console.log('总高度+',this.scroll + offsetHeight)
+//          大于body的总高度
           if(this.scroll + offsetHeight >= bodyHeight){
-            alert(1)
             axios.get("https://www.vue-js.com/api/v1/topics",{
               params: {
+                tab: this.tab,
                 page: ++this.page
               }
             })
               .then((result) => {
-                this.json.push(result.data.data)
+                for(let i = 0 ; i<result.data.data.length; i++){
+                  this.json.push(result.data.data[i]);
+                }
               })
               .catch( (err)=> {
                 alert(err)
@@ -100,6 +113,34 @@
 </script>
 
 <style lang="less" scoped>
+  .elite{
+    background: #1D8CE0;
+    color: #fff;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  .share{
+    background: #20A0FF;
+    color: #fff;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  .query{
+    background: #F7BA2A;
+    color: #fff;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+  .zhaopin{
+    background:#FF4949;
+    color: #fff;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
   .list_box{
     position: relative;
     .shade{
