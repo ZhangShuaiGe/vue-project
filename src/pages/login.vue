@@ -1,8 +1,7 @@
 <template>
     <div>
       <pubheader></pubheader>
-
-      <div v-if="show">
+      <div v-if="!vlogin">
           <el-row type="flex">
             <el-col :span="5"></el-col>
             <el-col :span="14" class="con">
@@ -13,7 +12,7 @@
           </el-row>
       </div>
 
-      <el-row v-else="show" type="flex">
+      <el-row type="flex" v-else>
          <el-col :span="5"></el-col>
          <el-col :span="14" class="login_xinxi">
             <img :src="data.avatar_url" alt="">
@@ -34,7 +33,7 @@
     import pubfooter from '../components/footer.vue'
     import axios from 'axios'
     export default {
-      name: '',
+      name: 'login',
       components: {
         pubheader,
         pubfooter
@@ -42,8 +41,18 @@
       data () {
         return {
           input: '',
-          show: true,
-          data: ''
+          vlogin: this.$store.state.login,
+          data: '',
+        }
+      },
+      computed: {
+        rsetLogin () {
+            return this.$store.state.login;
+        }
+      },
+      watch: {
+        rsetLogin: function (val) {
+          this.vlogin = val;
         }
       },
       methods: {
@@ -52,20 +61,27 @@
               accesstoken: this.input
             })
             .then((result) => {
-                console.log(result.data);
+                this.open();
                 this.data = result.data;
-                this.show = false;
-                var token = this.input;
-                result.data.token = token;
-                var json = JSON.stringify(result.data);
-                window.localStorage.setItem("login",json);
+                this.$store.state.username = result.data.loginname;
+                this.vlogin = true;
+//                存储登陆信息
+                window.localStorage.setItem("login",result.data.loginname);
+                this.$store.state.login = true;
             })
             .catch((err) => {
                 if(err){
-                  alert("登录失败，重新登录尝试");
+                  alert("登录失败，重新尝试登录");
                 }
             })
-        }
+        },
+        open () {
+          this.$message({
+            message: '登陆成功',
+            type: 'success',
+            duration: 1000
+          });
+        },
       }
     }
 </script>
@@ -84,11 +100,5 @@
   }
   .submit{
     margin-top: 20px;
-  }
-  .fixed_footer{
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
   }
 </style>

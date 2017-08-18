@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <keep-alive>
+       <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -10,6 +12,13 @@
     data () {
       return {
 
+      }
+    },
+    beforeCreate () {
+      let login =  localStorage.getItem("login");
+      if(login != null){
+        this.$store.state.login = true;
+        this.$store.state.username = login;
       }
     }
   }
@@ -33,5 +42,11 @@
   }
   ul,li{
     list-style: none;
+  }
+  .fixed_footer{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
   }
 </style>

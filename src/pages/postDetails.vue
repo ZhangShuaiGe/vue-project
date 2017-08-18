@@ -54,7 +54,7 @@
     import pubfooter from '../components/footer.vue'
     import axios from "axios"
     export default {
-      name: 'app',
+      name: '',
       components: {
         pubheader,
         pubfooter

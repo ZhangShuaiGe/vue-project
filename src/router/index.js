@@ -4,7 +4,8 @@ import Index from '@/pages/Index'
 import Error from '@/pages/Error'
 import PostDetail from "@/pages/postDetails"
 import Login from  "@/pages/login"
-
+import Personal from "@/pages/personal"
+import Newtopic from "@/pages/Newtopic"
 Vue.use(Router)
 
 export default new Router({
@@ -24,6 +25,16 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
+    },
+    {
+      path: '/personal',
+      name: '/personal',
+      component: Personal
+    },
+    {
+      path: '/Newtopic',
+      name: '/Newtopic',
+      component: Newtopic
     },
     // 404
     {
