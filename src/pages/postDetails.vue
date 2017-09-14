@@ -44,6 +44,17 @@
           </el-col>
           <el-col :span="5"></el-col>
         </el-row>
+
+        <el-row type="flex" class="markdown">
+          <el-col :span="5"></el-col>
+          <el-col :span="14">
+            <h3>发表看法</h3>
+            <!-- 使用双向绑定修饰符 -->
+            <mavonEditor v-model="markdown" ></mavonEditor>
+            <el-button class="sub" type="primary" :loading="loading" @click="submit">发表</el-button>
+          </el-col>
+          <el-col :span="5"></el-col>
+        </el-row>
       </div>
       <pubfooter></pubfooter>
     </div>
@@ -53,15 +64,19 @@
     import pubheader from '../components/header.vue'
     import pubfooter from '../components/footer.vue'
     import axios from "axios"
+    import { mavonEditor } from 'mavon-editor'
     export default {
       name: '',
       components: {
         pubheader,
-        pubfooter
+        pubfooter,
+        mavonEditor
       },
       data () {
           return {
-            content: ''
+            content: '',
+            markdown: '',
+            loading: false,
           }
       },
       created: function () {
@@ -75,7 +90,18 @@
           })
       },
       methods: {
-
+        submit () {
+            axios.post("https://www.vue-js.com/api/v1/topic/" + this.$route.params.id + "/replies",{
+              accesstoken: this.$store.state.username,
+              content: this.markdown
+            })
+              .then((result)=>{
+                alert(result)
+              })
+              .catch((err)=>{
+                alert(err)
+              })
+        }
       }
     }
 </script>
@@ -83,6 +109,14 @@
 <style lang="less">
   body{
     font-family: "微软雅黑";
+  }
+  .markdown h3{
+    color: #666;
+    font-weight: 600;
+    font-size: 20px;
+  }
+  .sub{
+    margin:20px 0;
   }
   .details_box{
     .goods{

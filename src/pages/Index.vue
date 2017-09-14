@@ -14,7 +14,6 @@
               </div>
               <ul class="list">
                 <li v-for="list in json">
-                  <!--个人中心-->
                   <router-link :to="'/'" :title="list.author.loginname">
                     <img class="avatar" :src="list.author.avatar_url" alt="">
                   </router-link>

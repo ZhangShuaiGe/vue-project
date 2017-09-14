@@ -7,6 +7,8 @@
 </template>
 
 <script>
+  import pubheader from './components/header.vue'
+  import pubfooter from './components/footer.vue'
   export default {
     name: 'app',
     data () {

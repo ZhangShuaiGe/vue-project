@@ -19,10 +19,7 @@
               <!--<h3>标题:</h3>-->
               <el-input class="title" v-model="title" placeholder="请输入标题10个字以上"></el-input>
               <!-- 使用双向绑定修饰符 -->
-              {{type}}
-              {{title}}
-              {{content}}
-              <mavonEditor v-model="content" :toolbars="toolbars"></mavonEditor>
+              <mavonEditor v-model="content" ></mavonEditor>
               <el-button type="primary" :loading="loading" @click="submit">发布</el-button>
             </div>
           </el-col>
@@ -54,21 +51,20 @@
       },
       methods: {
         submit: function () {
-          axios.post('https://www.vue-js.com/api/v1/topics',{
-              'title': this.title,
-              'tab': this.type,
-              'content': this.content,
-              'accessToken': this.$store.state.username,
-          })
-          .then((result)=>{
-              alert("1");
-              console.log(result);
-          })
-          .catch((err) => {
-            alert("提交异常")
-          })
 
-        }
+          axios.post('https://www.vue-js.com/api/v1/topics', {
+            accesstoken: this.$store.state.username,
+            title: this.title,
+            tab: this.type,
+            content: this.content
+          })
+          .then(function(response) {
+              alert("发表成功");
+          })
+          .catch(function(error) {
+              alert(err)
+          })
+        },
       }
     }
 </script>
